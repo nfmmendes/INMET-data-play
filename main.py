@@ -4,11 +4,14 @@ import matplotlib.pyplot as plt
 
 file = open("files.txt", "r")
 file_content = file.read()
-file_list = file_content.splitlines() #[ x.split('\n') for x in file_list ]
-file_list_splitted = [ x.strip().split('_')[0 : 8] for x in file_list if len(x) > 2]
-print(file_list_splitted[0])
-df_files = pd.DataFrame(columns=["INMET", "REGIAO", "ESTADO", "CODIGO", "CIDADE", "DATA INI", "A", "DATA FIM"],
+file_list = [x for x in file_content.splitlines() if len(x) > 2]
+file_list_splitted = [ x.replace(".CSV","").strip().split('_')[0 : 8] + [x] for x in file_list]
+
+df_files = pd.DataFrame(columns=["INMET", "REGIAO", "ESTADO", "CODIGO", "CIDADE", "DATA INI", "A", "DATA FIM", "ARQUIVO"],
                         data = file_list_splitted).drop(columns={"INMET", "A"})
+df_files["ANO"] = df_files["DATA FIM"].apply(lambda x: x.split('-')[-1])
+print(df_files)
+print(f"Existem dados de {len(df_files['CIDADE'].unique())} cidades")
 
 #### LE DADOS 2008
 df_ini = pd.read_csv("./2008/INMET_SE_MG_A552_SALINAS_01-01-2008_A_31-12-2008.CSV", sep=";",decimal=",", skiprows=8, encoding="ANSI")
