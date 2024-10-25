@@ -6,8 +6,7 @@ import matplotlib.pyplot as plt
 df_ini = pd.read_csv("./2008/INMET_SE_MG_A552_SALINAS_01-01-2008_A_31-12-2008.CSV", sep=";",decimal=",", skiprows=8, encoding="ANSI")
 df_ini = df_ini.rename({df_ini.columns[0]: 'Data'}, axis='columns')
 
-selected_cols = ["Data",\
-        "HORA (UTC)",\
+selected_cols = [df_ini.columns[0], df_ini.columns[1],\
         "PRECIPITAÇÃO TOTAL, HORÁRIO (mm)",\
         "TEMPERATURA DO AR - BULBO SECO, HORARIA (°C)",\
         "TEMPERATURA MÁXIMA NA HORA ANT. (AUT) (°C)",\
@@ -27,9 +26,10 @@ plt.plot([ f"{x.day}/{x.month}" for x in clean["Data"]], clean["Temperatura_Maxi
 
 ### LE DADOS 2015
 df_mid = pd.read_csv("./2015/INMET_SE_MG_A552_SALINAS_01-01-2015_A_31-12-2015.CSV", sep=";",decimal=",", skiprows=8, encoding="ANSI")
-df_mid = df_mid.rename({df_mid.columns[0]: 'Data'}, axis='columns')
 
+selected_cols[0] = df_mid.columns[0]
 df_mid = df_mid[selected_cols].rename(columns= {\
+        selected_cols[0]: "Data",\
         selected_cols[1]: "Hora_UTC",\
         selected_cols[2]: "Precipitacao_Total_MM",\
         selected_cols[3]: "Temperatura_Ar",\
@@ -43,8 +43,11 @@ clean = df_mid[df_mid["Temperatura_Maxima"].between(-273, 100)]
 ### LE DADOS 2023
 df_end = pd.read_csv("./2023/INMET_SE_MG_A552_SALINAS_01-01-2023_A_31-12-2023.CSV", sep=";", decimal=",", skiprows=8, encoding="ANSI")
 
+selected_cols[0] = df_end.columns[0]
 selected_cols[1] = df_end.columns[1]
+
 df_end = df_end[selected_cols].rename(columns= {\
+        selected_cols[0]: "Data",\
         selected_cols[1]: "Hora_UTC",\
         selected_cols[2]: "Precipitacao_Total_MM",\
         selected_cols[3]: "Temperatura_Ar",\
