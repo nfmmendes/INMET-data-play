@@ -2,9 +2,18 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 
+file = open("files.txt", "r")
+file_content = file.read()
+file_list = file_content.splitlines() #[ x.split('\n') for x in file_list ]
+file_list_splitted = [ x.strip().split('_')[0 : 8] for x in file_list if len(x) > 2]
+print(file_list_splitted[0])
+df_files = pd.DataFrame(columns=["INMET", "REGIAO", "ESTADO", "CODIGO", "CIDADE", "DATA INI", "A", "DATA FIM"],
+                        data = file_list_splitted).drop(columns={"INMET", "A"})
+
 #### LE DADOS 2008
 df_ini = pd.read_csv("./2008/INMET_SE_MG_A552_SALINAS_01-01-2008_A_31-12-2008.CSV", sep=";",decimal=",", skiprows=8, encoding="ANSI")
 df_ini = df_ini.rename({df_ini.columns[0]: 'Data'}, axis='columns')
+
 
 selected_cols = [df_ini.columns[0], df_ini.columns[1],\
         "PRECIPITAÇÃO TOTAL, HORÁRIO (mm)",\
