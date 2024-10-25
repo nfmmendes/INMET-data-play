@@ -1,4 +1,5 @@
 import pandas as pd
+from datetime import datetime
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -16,6 +17,9 @@ print(f"Existem dados de {len(df_files['CIDADE'].unique())} cidades")
 
 cidade = "SALINAS"
 df_cidade = df_files[df_files['CIDADE'] == cidade][['ARQUIVO','ANO']]
+
+
+fig, ax = plt.subplots()
 
 for i in range(0, len(df_cidade)):
     file_name = df_cidade.iloc[i]['ARQUIVO']
@@ -38,11 +42,20 @@ for i in range(0, len(df_cidade)):
 
     df['Data'] = df['Data'].astype('datetime64[ns]')
     df = df.sort_values(by='Data')
+    df = df.groupby(by='Data').agg({'Hora_UTC': 'last',\
+                                    'Precipitacao_Total_MM': 'sum',\
+                                    'Temperatura_Ar': 'mean',\
+                                    'Temperatura_Maxima': 'mean',\
+                                    'Temperatura_Minima': 'mean',\
+                                     })
     
     clean = df[df["Temperatura_Maxima"].between(-273, 100)]
-    plt.plot([ f"{x.day}/{x.month}" for x in clean["Data"]], clean["Temperatura_Maxima"].rolling(48).mean(), label=pasta)
+    
+    x_values = [ x.timetuple().tm_yday for x in clean.index]
+    plt.plot(x_values, clean["Temperatura_Maxima"], label=pasta)
 
-
+labels = [datetime.strptime("2024-" + str(day_num), "%Y-%j").strftime("%m-%d") for day_num in np.arange(1, 367, 10) ]
+ax.set_xticklabels(labels)
 plt.xticks(np.arange(0, 366, 10), rotation='vertical')
 plt.legend(loc = "upper right")
 plt.show()
