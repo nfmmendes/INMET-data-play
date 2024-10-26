@@ -1,4 +1,6 @@
 *.csv
 *.ps1
 *.zip
+*.venv/
+*.ipynb_checkpoints/
 *~
